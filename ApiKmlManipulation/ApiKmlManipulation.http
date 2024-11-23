@@ -1,6 +1,37 @@
+# Definir o endereço base para a API
 @ApiKmlManipulation_HostAddress = http://localhost:5216
 
-GET {{ApiKmlManipulation_HostAddress}}/weatherforecast/
+# 1. Endpoint básico para verificar se a API está funcionando
+GET {{ApiKmlManipulation_HostAddress}}/
 Accept: application/json
 
 ###
+
+# 2. Endpoint para Exportar um novo arquivo KML com base nos filtros
+POST {{ApiKmlManipulation_HostAddress}}/api/placemarks/export
+Content-Type: application/json
+Accept: application/xml  # O retorno será um arquivo KML
+
+{
+    "CLIENTE": "Cliente1",            # Filtro CLIENTE
+    "SITUAÇÃO": "Ativo",              # Filtro SITUAÇÃO
+    "BAIRRO": "Centro",              # Filtro BAIRRO
+    "REFERENCIA": "Rua ABC",         # Filtro REFERENCIA (mínimo de 3 caracteres)
+    "RUA/CRUZAMENTO": "Rua X com Rua Y"  # Filtro RUA/CRUZAMENTO (mínimo de 3 caracteres)
+}
+
+###
+
+# 3. Endpoint para listar os elementos filtrados no formato JSON
+GET {{ApiKmlManipulation_HostAddress}}/api/placemarks
+Accept: application/json
+
+# Parâmetros de filtro na URL
+# Adicione filtros como query strings, por exemplo:
+# ?CLIENTE=Cliente1&SITUAÇÃO=Ativo&BAIRRO=Centro&REFERENCIA=Rua&RUACRUZAMENTO=RuaX
+
+###
+
+# 4. Endpoint para obter os valores únicos dos filtros disponíveis
+GET {{ApiKmlManipulation_HostAddress}}/api/placemarks/filters
+Accept: application/json
