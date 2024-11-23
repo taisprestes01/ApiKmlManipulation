@@ -5,6 +5,7 @@ using System.Linq;
 using SharpKml.Dom;
 using SharpKml.Engine;
 using ApiKMLManipulation.Models;
+using System.ComponentModel;
 
 namespace ApiKMLManipulation.Services
 {
@@ -18,22 +19,27 @@ namespace ApiKMLManipulation.Services
         /// <summary>
         /// Inicializa uma nova instância de <see cref="KmlService"/>.
         /// </summary>
-        /// <param name="configuration">.</param>
+        /// <param name="filePath">Caminho para o arquivo KML.</param>
         /// <exception cref="FileNotFoundException"></exception>
-        public KmlService(IConfiguration configuration)
+        public KmlService(string filePath)
         {
-            _filePath = Path.Combine(Directory.GetCurrentDirectory(), configuration["ApplicationSettings:KmlFilePath"]);
-
-            if (!File.Exists(_filePath))
+            if (string.IsNullOrEmpty(filePath))
             {
-                throw new FileNotFoundException($"Arquivo KML não encontrado no caminho: {_filePath}");
+                throw new ArgumentException("Caminho do arquivo KML não pode ser nulo ou vazio.", nameof(filePath));
             }
+
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException($"Arquivo KML não encontrado: {filePath}");
+            }
+
+            _filePath = filePath;
         }
 
         /// <summary>
         /// Lê e parseia o arquivo KML, extraindo os dados relevantes.
         /// </summary>
-        /// <returns>Lista de objetos <see cref="PlacemarkModel"/></returns>
+        /// <returns>Lista de objetos <see cref="PlacemarkModel"/>.</returns>
         /// <exception cref="FileNotFoundException"></exception>
         /// <exception cref="InvalidDataException"></exception>
         public List<PlacemarkModel> ExtractPlacemarks()
@@ -49,33 +55,50 @@ namespace ApiKMLManipulation.Services
             {
                 var kmlFile = KmlFile.Load(fileStream);
 
-                if (kmlFile.Root is Kml kml && kml.Feature is Document document)
+                if (kmlFile.Root is Kml kml && kml.Feature is SharpKml.Dom.Container container)
                 {
-                    foreach (var placemark in document.Features.OfType<Placemark>())
-                    {
-                        var extendedData = placemark.ExtendedData;
-                        if (extendedData != null)
-                        {
-                            var model = new PlacemarkModel
-                            {
-                                Cliente = GetDataValue(extendedData, "CLIENTE"),
-                                Situacao = GetDataValue(extendedData, "SITUAÇÃO"),
-                                Bairro = GetDataValue(extendedData, "BAIRRO"),
-                                Referencia = GetDataValue(extendedData, "REFERENCIA"),
-                                RuaCruzamento = GetDataValue(extendedData, "RUA/CRUZAMENTO")
-                            };
-
-                            placemarks.Add(model);
-                        }
-                    }
+                    ExtractPlacemarksFromContainer(container, placemarks);
                 }
                 else
                 {
-                    throw new InvalidDataException("O arquivo KML não contém um documento válido.");
+                    throw new InvalidDataException("O arquivo KML não contém um container válido.");
                 }
             }
 
             return placemarks;
+        }
+
+        /// <summary>
+        /// Processa recursivamente containers e extrai placemarks.
+        /// </summary>
+        /// <param name="container">Container que pode conter placemarks ou outros containers.</param>
+        /// <param name="placemarks">Lista de placemarks extraídos.</param>
+        private void ExtractPlacemarksFromContainer(SharpKml.Dom.Container container, List<PlacemarkModel> placemarks)
+        {
+            foreach (var feature in container.Features)
+            {
+                if (feature is Placemark placemark)
+                {
+                    var extendedData = placemark.ExtendedData;
+                    if (extendedData != null)
+                    {
+                        var model = new PlacemarkModel
+                        {
+                            Cliente = GetDataValue(extendedData, "CLIENTE"),
+                            Situacao = GetDataValue(extendedData, "SITUAÇÃO"),
+                            Bairro = GetDataValue(extendedData, "BAIRRO"),
+                            Referencia = GetDataValue(extendedData, "REFERENCIA"),
+                            RuaCruzamento = GetDataValue(extendedData, "RUA/CRUZAMENTO")
+                        };
+
+                        placemarks.Add(model);
+                    }
+                }
+                else if (feature is SharpKml.Dom.Container childContainer)
+                {
+                    ExtractPlacemarksFromContainer(childContainer, placemarks);
+                }
+            }
         }
 
         /// <summary>
@@ -86,7 +109,7 @@ namespace ApiKMLManipulation.Services
         /// <returns>Valor do campo, ou <c>null</c> se não encontrado.</returns>
         private string GetDataValue(ExtendedData data, string key)
         {
-            return data.Data.FirstOrDefault(d => d.Name == key)?.Value;
+            return data?.Data?.FirstOrDefault(d => d.Name == key)?.Value?.Trim()?.Replace("\u00A0", " ");
         }
     }
 }
