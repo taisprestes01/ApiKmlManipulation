@@ -1,6 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
 using ApiKMLManipulation.Services;
+using System.Collections.Generic;
 
 namespace ApiKMLManipulation.Controllers
 {
@@ -31,6 +32,34 @@ namespace ApiKMLManipulation.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Lista os elementos filtrados no formato JSON.
+        /// </summary>
+        /// <param name="cliente">Filtro de CLIENTE.</param>
+        /// <param name="situacao">Filtro de SITUAÇÃO.</param>
+        /// <param name="bairro">Filtro de BAIRRO.</param>
+        /// <param name="referencia">Filtro parcial de REFERENCIA.</param>
+        /// <param name="ruaCruzamento">Filtro parcial de RUA/CRUZAMENTO.</param>
+        /// <returns>Lista de elementos filtrados no formato JSON.</returns>
+        [HttpGet]
+        public IActionResult GetFilteredPlacemarks(
+            [FromQuery] string? cliente,
+            [FromQuery] string? situacao,
+            [FromQuery] string? bairro,
+            [FromQuery] string? referencia,
+            [FromQuery] string? ruaCruzamento)
+        {
+            try
+            {
+                var filteredPlacemarks = _placemarkService.GetFilteredPlacemarks(cliente, situacao, bairro, referencia, ruaCruzamento);
+                return Ok(filteredPlacemarks);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
     }
