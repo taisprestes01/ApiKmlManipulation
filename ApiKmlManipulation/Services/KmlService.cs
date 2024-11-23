@@ -22,7 +22,7 @@ namespace ApiKMLManipulation.Services
         /// <exception cref="FileNotFoundException"></exception>
         public KmlService(IConfiguration configuration)
         {
-            _filePath = Path.Combine(Directory.GetCurrentDirectory(), configuration["KmlFilePath"]);
+            _filePath = Path.Combine(Directory.GetCurrentDirectory(), configuration["ApplicationSettings:KmlFilePath"]);
 
             if (!File.Exists(_filePath))
             {
