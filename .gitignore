@@ -1,0 +1,57 @@
+# Visual Studio
+.vs/
+
+# Rider
+.idea/
+
+# User-specific files
+*.swp
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Auto-generated files
+Generated_Code/
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa]rm/
+[Aa]rm64/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# Logs
+*.log
+logs/
+
+# Packages
+*.nupkg
+*.snupkg
+packages/
+
+# Tooling
+.vscode/
+.vscode-test/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+*.bak
+
+# Lock files
+project.lock.json
+project.fragment.lock.json
+
+# Others
+*.temp
+*.tmp
+*.ide
+
+# dotnet specific
+**/project.lock.json
+**/*.ide
