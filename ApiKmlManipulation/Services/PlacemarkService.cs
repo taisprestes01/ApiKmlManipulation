@@ -1,6 +1,7 @@
 using System.Linq;
 using ApiKMLManipulation.Models;
 using System.Collections.Generic;
+using System;
 
 namespace ApiKMLManipulation.Services
 {
@@ -43,6 +44,98 @@ namespace ApiKMLManipulation.Services
                 { "Situacoes", situacoes },
                 { "Bairros", bairros }
             };
+        }
+
+        public IEnumerable<PlacemarkModel> GetFilteredPlacemarks(
+            string? cliente,
+            string? situacao,
+            string? bairro,
+            string? referencia,
+            string? ruaCruzamento)
+        {
+            var placemarks = _kmlService.ExtractPlacemarks();
+
+            ValidateFilters(cliente, situacao, bairro, referencia, ruaCruzamento);
+
+            if (!string.IsNullOrWhiteSpace(cliente))
+            {
+                placemarks = placemarks.Where(p => p.Cliente.Equals(cliente, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            if (!string.IsNullOrWhiteSpace(situacao))
+            {
+                placemarks = placemarks.Where(p => p.Situacao?.Equals(situacao, StringComparison.OrdinalIgnoreCase) == true).ToList();
+            }
+
+            if (!string.IsNullOrWhiteSpace(bairro))
+            {
+                placemarks = placemarks.Where(p => p.Bairro?.Equals(bairro, StringComparison.OrdinalIgnoreCase) == true).ToList();
+            }
+
+            if (!string.IsNullOrWhiteSpace(referencia))
+            {
+                placemarks = placemarks.Where(p => p.Referencia?.Contains(referencia, StringComparison.OrdinalIgnoreCase) == true).ToList();
+            }
+
+            if (!string.IsNullOrWhiteSpace(ruaCruzamento))
+            {
+                placemarks = placemarks.Where(p => p.RuaCruzamento?.Contains(ruaCruzamento, StringComparison.OrdinalIgnoreCase) == true).ToList();
+            }
+
+            return placemarks;
+        }
+
+        /// <summary>
+        /// Valida os filtros fornecidos.
+        /// </summary>
+        private void ValidateFilters(
+            string? cliente,
+            string? situacao,
+            string? bairro,
+            string? referencia,
+            string? ruaCruzamento)
+        {
+            var placemarks = _kmlService.ExtractPlacemarks();
+
+            var validClients = placemarks.Select(p => p.Cliente).Distinct().ToList();
+            var validSituacoes = placemarks.Select(p => p.Situacao).Distinct().ToList();
+            var validBairros = placemarks.Select(p => p.Bairro).Distinct().ToList();
+
+            ValidateFilter(cliente, validClients, "cliente");
+            ValidateFilter(situacao, validSituacoes, "situação");
+            ValidateFilter(bairro, validBairros, "bairro");
+            ValidateMinimumLength(referencia, "referencia", 3);
+            ValidateMinimumLength(ruaCruzamento, "ruaCruzamento", 3);
+        }
+
+        /// <summary>
+        /// Valida se um parâmetro está dentro da lista de valores válidos.
+        /// </summary>
+        /// <param name="value">O valor a ser validado.</param>
+        /// <param name="validValues">A lista de valores válidos.</param>
+        /// <param name="fieldName">O nome do campo, para mensagens de erro.</param>
+        /// <exception cref="ArgumentException">Lançada se o valor não for válido.</exception>
+        private void ValidateFilter(string? value, List<string> validValues, string fieldName)
+        {
+            if (!string.IsNullOrWhiteSpace(value) && !validValues.Contains(value, StringComparer.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException($"{fieldName} '{value}' não é válido. Verifique os valores disponíveis.");
+            }
+        }
+
+        /// <summary>
+        /// Valida se um parâmetro tem pelo menos uma quantidade mínima de caracteres, se fornecido.
+        /// </summary>
+        /// <param name="value">O valor a ser validado.</param>
+        /// <param name="fieldName">O nome do campo, para mensagens de erro.</param>
+        /// <param name="minLength">Quantidade mínima de caracteres.</param>
+        /// <exception cref="ArgumentException">Lançada se o valor não atender ao critério.</exception>
+        private void ValidateMinimumLength(string? value, string fieldName, int minLength)
+        {
+            if (!string.IsNullOrWhiteSpace(value) && value.Length < minLength)
+            {
+                throw new ArgumentException($"O campo '{fieldName}' deve ter pelo menos {minLength} caracteres.");
+            }
         }
     }
 }
