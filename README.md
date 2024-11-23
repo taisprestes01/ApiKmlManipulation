@@ -47,7 +47,7 @@
 
 ```bash
 # Clone este repositório
-$ git clone https://github.com/seu-usuario/ApiKMLManipulation.git
+$ git clone https://github.com/taisprestes01/ApiKmlManipulation.git
 
 # Acesse a pasta do projeto
 $ cd ApiKMLManipulation
