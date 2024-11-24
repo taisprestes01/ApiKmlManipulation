@@ -2,6 +2,9 @@ using System.Linq;
 using ApiKMLManipulation.Models;
 using System.Collections.Generic;
 using System;
+using System.IO;
+using SharpKml.Dom;
+using SharpKml.Engine;
 
 namespace ApiKMLManipulation.Services
 {
@@ -136,6 +139,48 @@ namespace ApiKMLManipulation.Services
             {
                 throw new ArgumentException($"O campo '{fieldName}' deve ter pelo menos {minLength} caracteres.");
             }
+        }
+
+        /// <summary>
+        /// Exporta os placemarks filtrados para um arquivo KML.
+        /// </summary>
+        /// <param name="filters">Filtros a serem aplicados.</param>
+        /// <returns>Stream do arquivo KML gerado.</returns>
+        public Stream ExportFilteredKml(string? cliente, string? situacao, string? bairro, string? referencia, string? ruaCruzamento)
+        {
+            var filteredPlacemarks = GetFilteredPlacemarks(cliente, situacao, bairro, referencia, ruaCruzamento);
+
+            var kml = new Kml();
+            var document = new Document();
+
+            foreach (var placemark in filteredPlacemarks)
+            {
+                var kmlPlacemark = new Placemark
+                {
+                    Name = placemark.Cliente,
+                    Description = new Description
+                    {
+                        Text = $"Situação: {placemark.Situacao}, Bairro: {placemark.Bairro}, Referência: {placemark.Referencia}, Rua/Cruzamento: {placemark.RuaCruzamento}"
+                    },
+                    Geometry = new Point()
+                    {
+                        Coordinate = new SharpKml.Base.Vector(placemark.Latitude, placemark.Longitude)  
+                    }
+                };
+
+                document.AddFeature(kmlPlacemark);
+            }
+
+            kml = new Kml
+            {
+                Feature = document
+            };
+
+            var stream = new MemoryStream();
+            KmlFile.Create(kml, false).Save(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+
+            return stream;
         }
     }
 }
