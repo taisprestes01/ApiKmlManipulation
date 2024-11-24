@@ -18,13 +18,13 @@ builder.Services.AddScoped<KmlService>(provider =>
     var configuration = provider.GetRequiredService<IConfiguration>();
     var relativePath = configuration["ApplicationSettings:KmlFilePath"];
 
-    var projectDirectory = Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.Parent?.FullName;
-    if (projectDirectory == null)
+    var filePath = Path.Combine(AppContext.BaseDirectory, relativePath);
+
+    if (!File.Exists(filePath))
     {
-        throw new InvalidOperationException("Não foi possível determinar o diretório raiz do projeto.");
+        throw new FileNotFoundException($"Arquivo KML não encontrado: {filePath}");
     }
 
-    var filePath = Path.Combine(projectDirectory, relativePath);
     return new KmlService(filePath);
 });
 
@@ -33,6 +33,9 @@ builder.Services.AddScoped<PlacemarkService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 var app = builder.Build();
 
@@ -51,3 +54,4 @@ app.MapControllers();
 app.MapGet("/", () => "ApiKMLManipulation - API está funcionando!");
 
 app.Run();
+
