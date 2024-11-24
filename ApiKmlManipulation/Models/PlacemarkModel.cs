@@ -43,5 +43,11 @@ namespace ApiKMLManipulation.Models
         /// Valores válidos estão entre -180 e 180.
         /// </summary>
         public double Longitude { get; set; }
+
+        /// <summary>
+        /// Link para a imagem associada ao placemark.
+        /// O link é formatado para apontar para uma imagem PNG.
+        /// </summary>
+        public string MediaLink { get; set; }
     }
 }
