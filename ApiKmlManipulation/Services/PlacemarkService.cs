@@ -160,7 +160,7 @@ namespace ApiKMLManipulation.Services
                     Name = placemark.Cliente,
                     Description = new Description
                     {
-                        Text = $"Situação: {placemark.Situacao}, Bairro: {placemark.Bairro}, Referência: {placemark.Referencia}, Rua/Cruzamento: {placemark.RuaCruzamento}"
+                        Text = $"Situação: {placemark.Situacao}, Bairro: {placemark.Bairro}, Referência: {placemark.Referencia}, Rua/Cruzamento: {placemark.RuaCruzamento}, Imagem: {placemark.MediaLink}"
                     },
                     Geometry = new Point()
                     {
