@@ -91,7 +91,8 @@ namespace ApiKMLManipulation.Services
                             Referencia = GetDataValue(extendedData, "REFERENCIA"),
                             RuaCruzamento = GetDataValue(extendedData, "RUA/CRUZAMENTO"),
                             Latitude = point.Coordinate.Latitude,
-                            Longitude = point.Coordinate.Longitude
+                            Longitude = point.Coordinate.Longitude,
+                            MediaLink = GetDataValue(extendedData, "gx_media_links")
                         };
 
                         placemarks.Add(model);
