@@ -12,7 +12,7 @@ WORKDIR /app
 
 COPY --from=build /app/out ./
 
-COPY ApiKmlManipulation/ApiKmlManipulation/Data /app/Data
+COPY ApiKmlManipulation/Data ./Data/
 
 ENV ASPNETCORE_URLS=http://+:5000
 EXPOSE 5000
