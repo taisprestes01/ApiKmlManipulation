@@ -12,7 +12,7 @@ WORKDIR /app
 
 COPY --from=build /app/out ./
 
-COPY ApiKmlManipulation/Data/DIRECIONADORES1.kml ./Data/
+COPY Data/DIRECIONADORES1.kml ./Data/
 
 ENV ASPNETCORE_URLS=http://+:5000
 EXPOSE 5000
