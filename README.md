@@ -47,7 +47,7 @@ curl -X GET "https://apikmlmanipulation-19.onrender.com/api/placemarks"
 
 * **Valores únicos para filtros:** Obtenha os valores disponíveis para campos de filtro como CLIENTE, SITUAÇÃO e BAIRRO.
 ```bash
-curl -X GET "https://apikmlmanipulation-19.onrender.com/api/placemarks/FILTERS"
+curl -X GET "https://apikmlmanipulation-19.onrender.com/api/placemarks/filters"
 
 ```
 
