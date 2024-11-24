@@ -31,5 +31,17 @@ namespace ApiKMLManipulation.Models
         /// Deve conter pelo menos 3 caracteres.
         /// </summary>
         public string RuaCruzamento { get; set; }
+
+        /// <summary>
+        /// Coordenada de latitude associada ao placemark.
+        /// Valores válidos estão entre -90 e 90.
+        /// </summary>
+        public double Latitude { get; set; }
+
+        /// <summary>
+        /// Coordenada de longitude associada ao placemark.
+        /// Valores válidos estão entre -180 e 180.
+        /// </summary>
+        public double Longitude { get; set; }
     }
 }
