@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-COPY ApiKmlManipulation/ApiKmlManipulation ./ApiKmlManipulation
+COPY ApiKmlManipulation ./ApiKmlManipulation
 
 WORKDIR /app/ApiKmlManipulation
 RUN dotnet restore ApiKmlManipulation.csproj
