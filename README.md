@@ -27,11 +27,29 @@
   <a href="#support">Suporte</a>
 </p>
 
+## link da API
+```bash
+https://apikmlmanipulation-19.onrender.com/
+
+```
 ## Funcionalidades
 
 * **Exportar KML filtrado:** Criação de novos arquivos KML baseados em filtros personalizados.
+```bash
+curl -X POST "https://apikmlmanipulation-19.onrender.com/api/placemarks/export"
+
+```
 * **Listagem de dados em JSON:** Converta os dados do KML em um formato JSON legível.
+```bash
+curl -X GET "https://apikmlmanipulation-19.onrender.com/api/placemarks"
+
+```
+
 * **Valores únicos para filtros:** Obtenha os valores disponíveis para campos de filtro como CLIENTE, SITUAÇÃO e BAIRRO.
+```bash
+curl -X GET "https://apikmlmanipulation-19.onrender.com/api/placemarks/FILTERS"
+
+```
 
 ---
 
