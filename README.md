@@ -36,7 +36,7 @@ https://apikmlmanipulation-19.onrender.com/
 
 * **Exportar KML filtrado:** Criação de novos arquivos KML baseados em filtros personalizados.
 ```bash
-curl -X POST "https://apikmlmanipulation-19.onrender.com/api/placemarks/export"
+curl -X POST "https://apikmlmanipulation-19.onrender.com/api/placemarks/export" -o export.kml
 
 ```
 * **Listagem de dados em JSON:** Converta os dados do KML em um formato JSON legível.
