@@ -80,6 +80,7 @@ namespace ApiKMLManipulation.Services
                 if (feature is Placemark placemark)
                 {
                     var extendedData = placemark.ExtendedData;
+                    var point = placemark.Geometry as Point;
                     if (extendedData != null)
                     {
                         var model = new PlacemarkModel
@@ -88,7 +89,9 @@ namespace ApiKMLManipulation.Services
                             Situacao = GetDataValue(extendedData, "SITUAÇÃO"),
                             Bairro = GetDataValue(extendedData, "BAIRRO"),
                             Referencia = GetDataValue(extendedData, "REFERENCIA"),
-                            RuaCruzamento = GetDataValue(extendedData, "RUA/CRUZAMENTO")
+                            RuaCruzamento = GetDataValue(extendedData, "RUA/CRUZAMENTO"),
+                            Latitude = point.Coordinate.Latitude,
+                            Longitude = point.Coordinate.Longitude
                         };
 
                         placemarks.Add(model);
