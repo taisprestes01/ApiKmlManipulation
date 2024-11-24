@@ -62,5 +62,34 @@ namespace ApiKMLManipulation.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Exporta os placemarks filtrados para um arquivo KML.
+        /// </summary>
+        /// <param name="cliente">Filtro de CLIENTE.</param>
+        /// <param name="situacao">Filtro de SITUAÇÃO.</param>
+        /// <param name="bairro">Filtro de BAIRRO.</param>
+        /// <param name="referencia">Filtro parcial de REFERENCIA.</param>
+        /// <param name="ruaCruzamento">Filtro parcial de RUA/CRUZAMENTO.</param>
+        /// <returns>Arquivo KML filtrado.</returns>
+        [HttpPost("export")]
+        public IActionResult ExportKml(
+            [FromQuery] string? cliente,
+            [FromQuery] string? situacao,
+            [FromQuery] string? bairro,
+            [FromQuery] string? referencia,
+            [FromQuery] string? ruaCruzamento)
+        {
+            try
+            {
+                var kmlStream = _placemarkService.ExportFilteredKml(cliente, situacao, bairro, referencia, ruaCruzamento);
+
+                return File(kmlStream, "application/vnd.google-earth.kml+xml", "placemarks-export.kml");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }
