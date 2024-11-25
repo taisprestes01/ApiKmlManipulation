@@ -86,7 +86,7 @@ namespace ApiKMLManipulation.Services
                         var model = new PlacemarkModel
                         {
                             Cliente = GetDataValue(extendedData, "CLIENTE"),
-                            Situacao = GetDataValue(extendedData, "SITUAÇÃO"),
+                            Situacao = GetDataValue(extendedData, "SITUACAO"),
                             Bairro = GetDataValue(extendedData, "BAIRRO"),
                             Referencia = GetDataValue(extendedData, "REFERENCIA"),
                             RuaCruzamento = GetDataValue(extendedData, "RUA/CRUZAMENTO"),
